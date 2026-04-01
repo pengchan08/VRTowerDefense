@@ -36,6 +36,10 @@ public class DroneAI : MonoBehaviour
     [SerializeField] int hp = 3;
 
 
+    // 폭발 효과
+    private Transform explosion;
+    private ParticleSystem expEffect;
+    private AudioSource expAudio;
 
     void Start()
     {
@@ -45,8 +49,13 @@ public class DroneAI : MonoBehaviour
 
         // NavMeshAgent 컴포넌트 가져오기
         agent = GetComponent<NavMeshAgent>();
+        agent.enabled = false;
         // agent 속도 설정
         agent.speed = moveSpeed;
+
+        explosion = GameObject.Find("Explosion").transform;
+        expEffect = explosion.GetComponent<ParticleSystem>();
+        expAudio = explosion.GetComponent<AudioSource>();
     }
 
     void Update()
@@ -65,7 +74,7 @@ public class DroneAI : MonoBehaviour
                 Attack();
                 break;
             case DroneState.Damage:
-                Damage();
+                // Damage();
                 break;
             case DroneState.Die:
                 Die();
@@ -110,9 +119,24 @@ public class DroneAI : MonoBehaviour
         }
     }
 
-    private void Damage()
+    IEnumerator Damage()
     {
-
+        // 1. 길 찾기 중지
+        agent.enabled = false;
+        // 2. 자식 객체의 MeshRenderer에서 재질 받아오기
+        Material mat = GetComponentInChildren<MeshRenderer>().material;
+        // 3. 원래 색을 지정
+        Color originalColor = mat.color;
+        // 4. 재질의 색 변경
+        mat.color = Color.red;
+        // 5. 0.1초 기다리기
+        yield return new WaitForSeconds(0.1f);
+        // 6. 재질의 색을 원래대로
+        mat.color = originalColor;
+        // 7. 상태를 Idle로 전환
+        state = DroneState.Idle;
+        // 8. 경과 시간 초기화
+        currentTime = 0;
     }
 
     private void Die()
@@ -123,5 +147,21 @@ public class DroneAI : MonoBehaviour
     public void OnDamageProcess()
     {
         // 체력을 감소시키고 죽지 않았다면 상태를 데미지로 전환하고 싶다
+        hp--;
+        if (hp > 0)
+        {
+            // 상태를 데미지로 전환
+            state = DroneState.Damage;
+            // 코루틴 호출
+            StopAllCoroutines();
+            StartCoroutine(Damage());
+        }
+        else
+        {
+            explosion.position = transform.position;
+            expEffect.Play();
+            expAudio.Play();
+            Destroy(gameObject);
+        }
     }
 }

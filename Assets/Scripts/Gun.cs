@@ -27,7 +27,7 @@ public class Gun : MonoBehaviour
         {
             // 컨트롤러의 진동 재생
             ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
-            
+
             // 총알 오디오 재생
             bulletAudio.Stop();
             bulletAudio.Play();
@@ -51,6 +51,15 @@ public class Gun : MonoBehaviour
                 bulletImpact.position = hitInfo.point;
                 // 부딪힌 지점 방향으로 총알 이펙트의 방향을 설정
                 bulletImpact.forward = hitInfo.normal;
+                // ray와 부딪힌 객체가 drone이면 피격 처리
+                if (hitInfo.transform.name.Contains("Drone"))
+                {
+                    DroneAI drone = hitInfo.transform.GetComponent<DroneAI>();
+                    if (drone)
+                    {
+                        drone.OnDamageProcess();
+                    }
+                }
             }
         }
     }

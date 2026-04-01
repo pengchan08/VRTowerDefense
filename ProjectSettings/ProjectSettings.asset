@@ -163,6 +163,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.DefaultCompany.VRTowerDefense
     Standalone: com.DefaultCompany.VRTowerDefense
   buildNumber:
     Standalone: 0
