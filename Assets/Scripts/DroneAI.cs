@@ -33,7 +33,7 @@ public class DroneAI : MonoBehaviour
     // 공격 지연 시간
     public float attackDelayTime = 2f;
 
-    [SerializeField] int hp = 3;
+    [SerializeField] int hp = 20;
 
 
     // 폭발 효과
@@ -144,10 +144,17 @@ public class DroneAI : MonoBehaviour
 
     }
 
+    // 기존 호환성 유지: 외부에서 damage 값 없이 호출할 경우 기본 1 데미지
     public void OnDamageProcess()
     {
-        // 체력을 감소시키고 죽지 않았다면 상태를 데미지로 전환하고 싶다
-        hp--;
+        OnDamageProcess(1);
+    }
+
+    // 데미지 값을 직접 받는 오버로드 함수
+    public void OnDamageProcess(int damage)
+    {
+        // 데미지만큼 체력 감소
+        hp -= damage;
         if (hp > 0)
         {
             // 상태를 데미지로 전환
