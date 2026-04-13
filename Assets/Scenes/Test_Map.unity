@@ -2902,6 +2902,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7707763677068711837, guid: 3d6c7430bd21a564489df266ea8864e1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -3377,6 +3381,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8b36fb41929fc22429f0083d817b8040, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 9.945
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 8b36fb41929fc22429f0083d817b8040, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 8b36fb41929fc22429f0083d817b8040, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -3952,14 +3960,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50eba04a064fc4642b3a64e4840b3456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 397183100}
   bulletImpact: {fileID: 598624971}
   crosshair: {fileID: 1862438546}
-  damage: 5
-  maxAmmo: 6
-  reloadTime: 1
-  fireRate: 1
-  gunVisual: {fileID: 789249413}
 --- !u!1001 &812114028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7665,14 +7667,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50eba04a064fc4642b3a64e4840b3456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 175418066}
   bulletImpact: {fileID: 598624971}
   crosshair: {fileID: 1862438546}
-  damage: 5
-  maxAmmo: 6
-  reloadTime: 1
-  fireRate: 1
-  gunVisual: {fileID: 1635947264}
 --- !u!1001 &1641854396
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8109,14 +8105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50eba04a064fc4642b3a64e4840b3456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 241497321}
   bulletImpact: {fileID: 598624971}
   crosshair: {fileID: 1862438546}
-  damage: 5
-  maxAmmo: 6
-  reloadTime: 1
-  fireRate: 1
-  gunVisual: {fileID: 1697451457}
 --- !u!1001 &1704406142
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,16 +16,15 @@ public class Gun : MonoBehaviour
     private int currentAmmo;
     private int maxAmmo = 6;
     // 재장전 시간 (초)
-    private float reloadTime = 1f;
+    private float reloadTime = 1.2f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 1f;
+    private float fireRate = 1.0f;
 
     // 재장전 중 여부
     private bool isReloading = false;
-    // 마지막 발사 시각 (Time.time 기준)
     private float lastFireTime = -999f;
 
-    public GameObject gunVisual;
+    private MeshRenderer[] gunMeshRenderers;
 
     public int CurrentAmmo => currentAmmo;
     public int MaxAmmo => maxAmmo;
@@ -40,6 +39,10 @@ public class Gun : MonoBehaviour
 
         // 탄창 초기화
         currentAmmo = maxAmmo;
+
+        // 자식 오브젝트의 MeshRenderer 전부 수집
+        // (true = 비활성화된 자식도 포함)
+        gunMeshRenderers = GetComponentsInChildren<MeshRenderer>(true);
     }
 
     void Update()
@@ -47,7 +50,6 @@ public class Gun : MonoBehaviour
         // 크로스헤어 표시
         ARAVRInput.DrawCrosshair(crosshair);
 
-        // 재장전 중이면 발사 불가
         if (isReloading) return;
 
         bool fireInput = ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger)
@@ -124,22 +126,29 @@ public class Gun : MonoBehaviour
             StartCoroutine(Reload());
         }
     }
-
+    private void SetGunVisible(bool visible)
+    {
+        if (gunMeshRenderers == null) return;
+        foreach (MeshRenderer mr in gunMeshRenderers)
+        {
+            mr.enabled = visible;
+        }
+    }
     private IEnumerator Reload()
     {
         isReloading = true;
         Debug.Log("[Gun] 재장전 중... (" + reloadTime + "초)");
 
-        // 재장전 중에는 총기 비주얼 비활성화
-        if (gunVisual != null) gunVisual.SetActive(false);
+        // 재장전 중 총기 메시 숨기기
+        SetGunVisible(false);
 
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = maxAmmo;
         isReloading = false;
 
-        // 재장전 완료 후 총기 비주얼 다시 활성화
-        if (gunVisual != null) gunVisual.SetActive(true);
+        // 재장전 완료 후 총기 메시 다시 표시
+        SetGunVisible(true);
 
         Debug.Log("[Gun] 재장전 완료! 탄약: " + currentAmmo + " / " + maxAmmo);
     }
@@ -148,6 +157,6 @@ public class Gun : MonoBehaviour
     {
         StopAllCoroutines();
         isReloading = false;
-        if (gunVisual != null) gunVisual.SetActive(true);
+        SetGunVisible(true);
     }
 }
