@@ -7664,7 +7664,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1635947264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50eba04a064fc4642b3a64e4840b3456, type: 3}
+  m_Script: {fileID: 11500000, guid: 92f905e248320ba46904c9c1b0f90230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bulletImpact: {fileID: 598624971}
@@ -8102,11 +8102,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1697451457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50eba04a064fc4642b3a64e4840b3456, type: 3}
+  m_Script: {fileID: 11500000, guid: 79ab399b23a637c4b945e32804f6e7d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletImpact: {fileID: 598624971}
-  crosshair: {fileID: 1862438546}
 --- !u!1001 &1704406142
 PrefabInstance:
   m_ObjectHideFlags: 0
