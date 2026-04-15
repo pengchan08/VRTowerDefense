@@ -23,9 +23,9 @@ public class MachineGun : MonoBehaviour
     private int currentAmmo;
     private int maxAmmo = 25;
     // 재장전 시간 (초)
-    private float reloadTime = 2.5f;
+    private float reloadTime = 1.5f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 0.15f;
+    private float fireRate = 0.25f;
 
     // 탄퍼짐 최대 각도 (도)
     private float spreadAngle = 4f;

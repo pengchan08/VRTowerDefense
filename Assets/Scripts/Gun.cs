@@ -25,7 +25,7 @@ public class Gun : MonoBehaviour
     // 재장전 시간 (초)
     private float reloadTime = 1.2f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 1.0f;
+    private float fireRate = 0.7f;
 
     // 재장전 중 여부
     private bool isReloading = false;

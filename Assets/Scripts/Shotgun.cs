@@ -110,8 +110,6 @@ public class Shotgun : MonoBehaviour
         int towerLayer  = 1 << LayerMask.NameToLayer("Tower");
         int layerMask   = playerLayer | towerLayer;
 
-        bool hitSomething = false;
-
         foreach (Vector3 localDir in pelletDirections)
         {
             Vector3 worldDir = TransformPelletDirection(localDir);
@@ -120,9 +118,23 @@ public class Shotgun : MonoBehaviour
 
             if (Physics.Raycast(ray, out hitInfo, 200, ~layerMask))
             {
-                hitSomething = true;
-                bulletImpact.position = hitInfo.point;
-                bulletImpact.forward  = hitInfo.normal;
+                GameObject impactObj = Instantiate(
+                    bulletImpact.gameObject,
+                    hitInfo.point,
+                    Quaternion.LookRotation(hitInfo.normal)
+                );
+                ParticleSystem ps = impactObj.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    ps.Stop();
+                    ps.Play();
+
+                    Destroy(impactObj, ps.main.duration + ps.main.startLifetime.constantMax);
+                }
+                else
+                {
+                    Destroy(impactObj, 1f);
+                }
 
                 if (hitInfo.transform.name.Contains("Drone"))
                 {
@@ -135,11 +147,8 @@ public class Shotgun : MonoBehaviour
             }
         }
 
-        if (hitSomething)
-        {
-            bulletEffect.Stop();
-            bulletEffect.Play();
-        }
+        bulletEffect.Stop();
+        bulletEffect.Play();
 
         if (currentAmmo <= 0)
         {
