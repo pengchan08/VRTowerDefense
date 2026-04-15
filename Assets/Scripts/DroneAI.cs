@@ -23,7 +23,7 @@ public class DroneAI : MonoBehaviour
     private float currentTime;
 
     // 이동 속도
-    public float moveSpeed = 1f;
+    public float moveSpeed = 5f;
     // 타워 위치
     private Transform tower;
     // 길 찾기 수행 내비게이션 메시 에이전트
