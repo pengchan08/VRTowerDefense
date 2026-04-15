@@ -6,7 +6,15 @@ public class MachineGun : MonoBehaviour
 {
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
-    private AudioSource bulletAudio;
+
+
+    [Header("Sound")]
+    public AudioClip fireClip;      // 발사 사운드 클립
+    public AudioClip reloadClip;    // 재장전 사운드 클립
+
+    private AudioSource fireAudio;   // 발사 전용 AudioSource
+    private AudioSource reloadAudio; // 재장전 전용 AudioSource
+
     public Transform crosshair;
 
     // 1발당 피해량
@@ -19,7 +27,7 @@ public class MachineGun : MonoBehaviour
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
     private float fireRate = 0.15f;
 
-    // 탄퍼짐 최대 각도 (도) — 이 범위 안에서 랜덤 방향 오차 발생
+    // 탄퍼짐 최대 각도 (도)
     private float spreadAngle = 4f;
 
     // 재장전 중 여부
@@ -27,17 +35,22 @@ public class MachineGun : MonoBehaviour
     // 마지막 발사 시각 (Time.time 기준)
     private float lastFireTime = -999f;
 
-    // VR IndexTrigger / PC Shift를 누르고 있는 동안 연속 발사
-    private bool isFiring = false;
-
-    // 재장전 중 숨길 MeshRenderer 목록 (자동 수집)
+    // 재장전 중 숨길 MeshRenderer 목록
     private MeshRenderer[] gunMeshRenderers;
 
     void Start()
     {
         bulletEffect = bulletImpact.GetComponent<ParticleSystem>();
 
-        bulletAudio = bulletImpact.GetComponent<AudioSource>();
+        AudioSource[] sources = GetComponents<AudioSource>();
+
+        fireAudio = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
+        fireAudio.playOnAwake = false;
+        fireAudio.clip = fireClip;
+
+        reloadAudio = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
+        reloadAudio.playOnAwake = false;
+        reloadAudio.clip = reloadClip;
 
         currentAmmo = maxAmmo;
 
@@ -46,7 +59,6 @@ public class MachineGun : MonoBehaviour
 
     void Update()
     {
-
         ARAVRInput.DrawCrosshair(crosshair);
 
         if (isReloading) return;
@@ -67,6 +79,7 @@ public class MachineGun : MonoBehaviour
 
             Fire();
         }
+
     }
 
     private void Fire()
@@ -76,8 +89,10 @@ public class MachineGun : MonoBehaviour
 
         ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
-        bulletAudio.Stop();
-        bulletAudio.Play();
+        if (fireAudio != null && fireClip != null)
+        {
+            fireAudio.PlayOneShot(fireClip);
+        }
 
         Vector3 baseDir   = ARAVRInput.RHandDirection.normalized;
         Vector3 spreadDir = ApplySpread(baseDir);
@@ -137,6 +152,13 @@ public class MachineGun : MonoBehaviour
 
         SetGunVisible(false);
 
+        if (fireAudio != null) fireAudio.Stop();
+        if (reloadAudio != null && reloadClip != null)
+        {
+            reloadAudio.Stop();
+            reloadAudio.Play();
+        }
+
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = maxAmmo;
@@ -155,6 +177,10 @@ public class MachineGun : MonoBehaviour
     {
         StopAllCoroutines();
         isReloading = false;
+
+        if (fireAudio != null)   fireAudio.Stop();
+        if (reloadAudio != null) reloadAudio.Stop();
+
         SetGunVisible(true);
     }
 }

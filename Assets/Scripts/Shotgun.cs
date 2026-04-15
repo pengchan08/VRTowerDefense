@@ -6,7 +6,14 @@ public class Shotgun : MonoBehaviour
 {
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
-    private AudioSource bulletAudio;
+
+    [Header("Sound")]
+    public AudioClip fireClip;      // 발사 사운드 클립
+    public AudioClip reloadClip;    // 재장전 사운드 클립
+
+    private AudioSource fireAudio;   // 발사 전용 AudioSource
+    private AudioSource reloadAudio; // 재장전 전용 AudioSource
+
     // Crosshair를 위한 속성
     public Transform crosshair;
 
@@ -22,13 +29,16 @@ public class Shotgun : MonoBehaviour
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
     private float fireRate = 1.2f;
 
+    // 펠릿 퍼짐 각도 (도) — 값이 클수록 더 넓게 퍼짐
+    private float spreadAngle = 8f;
+
     private Vector3[] pelletDirections = new Vector3[]
     {
         new Vector3( 0.00f,  0.00f, 1f),
-        new Vector3( 0.06f,  0.00f, 1f),
-        new Vector3(-0.06f,  0.00f, 1f),
-        new Vector3( 0.00f,  0.06f, 1f),
-        new Vector3( 0.00f, -0.06f, 1f),
+        new Vector3( 0.15f,  0.00f, 1f),
+        new Vector3(-0.15f,  0.00f, 1f),
+        new Vector3( 0.00f,  0.15f, 1f),
+        new Vector3( 0.00f, -0.15f, 1f),
     };
 
     private bool isReloading = false;
@@ -44,7 +54,15 @@ public class Shotgun : MonoBehaviour
     {
         bulletEffect = bulletImpact.GetComponent<ParticleSystem>();
 
-        bulletAudio = bulletImpact.GetComponent<AudioSource>();
+        AudioSource[] sources = GetComponents<AudioSource>();
+
+        fireAudio = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
+        fireAudio.playOnAwake = false;
+        fireAudio.clip = fireClip;
+
+        reloadAudio = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
+        reloadAudio.playOnAwake = false;
+        reloadAudio.clip = reloadClip;
 
         currentAmmo = maxAmmo;
 
@@ -82,8 +100,11 @@ public class Shotgun : MonoBehaviour
 
         ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
-        bulletAudio.Stop();
-        bulletAudio.Play();
+        if (fireAudio != null && fireClip != null)
+        {
+            fireAudio.Stop();
+            fireAudio.Play();
+        }
 
         int playerLayer = 1 << LayerMask.NameToLayer("Player");
         int towerLayer  = 1 << LayerMask.NameToLayer("Tower");
@@ -129,13 +150,18 @@ public class Shotgun : MonoBehaviour
     private Vector3 TransformPelletDirection(Vector3 localDir)
     {
         Vector3 forward = ARAVRInput.RHandDirection.normalized;
-        // forward와 수직인 right/up 벡터 계산
         Vector3 right   = Vector3.Cross(Vector3.up, forward).normalized;
         Vector3 up      = Vector3.Cross(forward, right).normalized;
 
-        return (forward * localDir.z
-              + right   * localDir.x
-              + up      * localDir.y).normalized;
+        Vector3 baseDir = (forward * localDir.z
+                         + right   * localDir.x
+                         + up      * localDir.y).normalized;
+
+        float randomX = Random.Range(-spreadAngle, spreadAngle);
+        float randomY = Random.Range(-spreadAngle, spreadAngle);
+        Quaternion spreadRot = Quaternion.Euler(randomX, randomY, 0);
+
+        return spreadRot * baseDir;
     }
 
     private void SetGunVisible(bool visible)
@@ -154,6 +180,12 @@ public class Shotgun : MonoBehaviour
 
         SetGunVisible(false);
 
+        if (reloadAudio != null && reloadClip != null)
+        {
+            reloadAudio.Stop();
+            reloadAudio.Play();
+        }
+
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = maxAmmo;
@@ -168,6 +200,9 @@ public class Shotgun : MonoBehaviour
     {
         StopAllCoroutines();
         isReloading = false;
+
+        if (reloadAudio != null) reloadAudio.Stop();
+
         SetGunVisible(true);
     }
 }

@@ -7,6 +7,7 @@ public class GunManager : MonoBehaviour
     public GameObject[] guns;
 
     private int currentIndex = 0;
+    public int CurrentIndex => currentIndex;
 
     void Start()
     {
@@ -23,8 +24,30 @@ public class GunManager : MonoBehaviour
 
         if (swapInput)
         {
+            if (IsCurrentGunReloading())
+            {
+                Debug.Log("[GunManager] 재장전 중에는 무기를 전환할 수 없습니다.");
+                return;
+            }
+
             SwapWeapon();
         }
+    }
+
+    private bool IsCurrentGunReloading()
+    {
+        GameObject currentGun = guns[currentIndex];
+
+        Gun gun = currentGun.GetComponent<Gun>();
+        if (gun != null) return gun.IsReloading;
+
+        Shotgun shotgun = currentGun.GetComponent<Shotgun>();
+        if (shotgun != null) return shotgun.IsReloading;
+
+        MachineGun machineGun = currentGun.GetComponent<MachineGun>();
+        if (machineGun != null) return machineGun.IsReloading;
+
+        return false;
     }
 
     private void SwapWeapon()
@@ -49,6 +72,4 @@ public class GunManager : MonoBehaviour
         MachineGun machineGun = gunObj.GetComponent<MachineGun>();
         if (machineGun != null) { machineGun.OnWeaponDeactivate(); return; }
     }
-
-    public int CurrentIndex => currentIndex;
 }
