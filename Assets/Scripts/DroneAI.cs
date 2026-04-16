@@ -1,173 +1,95 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class DroneAI : MonoBehaviour
 {
-    // 드론의 상태 상수 정의
-    enum DroneState
-    {
-        Idle,
-        Move,
-        Attack,
-        Damage,
-        Die,
-    }
+    // 보스 여부
+    [Header("Boss Settings")]
+    public bool isBoss = false;
 
-    // 초기 시작 상태는 Idle로 설정
-    DroneState state = DroneState.Idle;
-    // 대기 상태의 지속시간
-    public float idleDelayTime = 2f;
-    // 경과 시간
-    private float currentTime;
+    // 일반 드론 스탯
+    [Header("Normal Drone Stats")]
+    public int   normalHP     = 10;
+    public float normalSpeed  = 5f;
+    public int   normalDamage = 1;
 
-    // 이동 속도
-    public float moveSpeed = 5f;
-    // 타워 위치
-    private Transform tower;
-    // 길 찾기 수행 내비게이션 메시 에이전트
-    private NavMeshAgent agent;
-    // 공격 범위
-    public float attackRange = 3f;
-    // 공격 지연 시간
-    public float attackDelayTime = 2f;
+    // 보스 드론 스탯
+    [Header("Boss Drone Stats")]
+    public int   bossHP     = 50;
+    public float bossSpeed  = 3f;
+    public int   bossDamage = 2;
 
-    [SerializeField] int hp = 20;
+    // 런타임 스탯
+    private int   _hp;
+    private float _speed;
+    private int   _damage;
 
+    // 이동 목표
+    [Header("Movement")]
+    public Transform target;
 
-    // 폭발 효과
-    private Transform explosion;
-    private ParticleSystem expEffect;
-    private AudioSource expAudio;
+    // 피격 이펙트
+    [Header("Hit Effect")]
+    public ParticleSystem hitEffect;
+
+    public int   HP     => _hp;
+    public float Speed  => _speed;
+    public int   Damage => _damage;
 
     void Start()
     {
-        // 타워 찾기
-        // tower = GameObject.Find("Tower").transform;
-        tower = FindObjectOfType<Tower>().gameObject.transform;
+        if (isBoss)
+        {
+            _hp     = bossHP;
+            _speed  = bossSpeed;
+            _damage = bossDamage;
 
-        // NavMeshAgent 컴포넌트 가져오기
-        agent = GetComponent<NavMeshAgent>();
-        agent.enabled = false;
-        // agent 속도 설정
-        agent.speed = moveSpeed;
-
-        explosion = GameObject.Find("Explosion").transform;
-        expEffect = explosion.GetComponent<ParticleSystem>();
-        expAudio = explosion.GetComponent<AudioSource>();
+            // 보스는 크기 2배
+            transform.localScale *= 2f;
+        }
+        else
+        {
+            _hp     = normalHP;
+            _speed  = normalSpeed;
+            _damage = normalDamage;
+        }
     }
 
     void Update()
     {
-        print("current state: " + state);
+        if (target == null) return;
 
-        switch (state)
+        Vector3 dir = (target.position - transform.position).normalized;
+        transform.position += dir * _speed * Time.deltaTime;
+
+        if (Vector3.Distance(transform.position, target.position) < 1f)
         {
-            case DroneState.Idle:
-                Idle();
-                break;
-            case DroneState.Move:
-                Move();
-                break;
-            case DroneState.Attack:
-                Attack();
-                break;
-            case DroneState.Damage:
-                // Damage();
-                break;
-            case DroneState.Die:
-                Die();
-                break;
+            ReachTarget();
         }
     }
 
-    private void Idle()
+    private void ReachTarget()
     {
-        // 시간 경과
-        currentTime += Time.deltaTime;
-        if (currentTime > idleDelayTime)
+        if (Tower.Instance != null)
         {
-            // 상태 전환
-            state = DroneState.Move;
-            // agent 활성화
-            agent.enabled = true;
+            Tower.Instance.HP -= _damage;
         }
+        Destroy(gameObject);
     }
 
-    private void Move()
-    {
-        // 내비게이션 할 목적지 설정
-        agent.SetDestination(tower.position);
-        // 공격 범위 안에 들어오면 공격 상태로 전환
-        if (Vector3.Distance(transform.position, tower.position) < attackRange)
-        {
-            state = DroneState.Attack;
-            agent.enabled = false;
-        }
-    }
-
-    private void Attack()
-    {
-        currentTime += Time.deltaTime;
-        if (currentTime > attackDelayTime)
-        {
-            // 공격
-            Tower.Instance.HP--;
-            // 경과시간 초기화
-            currentTime = 0f;
-        }
-    }
-
-    IEnumerator Damage()
-    {
-        // 1. 길 찾기 중지
-        agent.enabled = false;
-        // 2. 자식 객체의 MeshRenderer에서 재질 받아오기
-        Material mat = GetComponentInChildren<MeshRenderer>().material;
-        // 3. 원래 색을 지정
-        Color originalColor = mat.color;
-        // 4. 재질의 색 변경
-        mat.color = Color.red;
-        // 5. 0.1초 기다리기
-        yield return new WaitForSeconds(0.1f);
-        // 6. 재질의 색을 원래대로
-        mat.color = originalColor;
-        // 7. 상태를 Idle로 전환
-        state = DroneState.Idle;
-        // 8. 경과 시간 초기화
-        currentTime = 0;
-    }
-
-    private void Die()
-    {
-
-    }
-
-    // 기존 호환성 유지: 외부에서 damage 값 없이 호출할 경우 기본 1 데미지
-    public void OnDamageProcess()
-    {
-        OnDamageProcess(1);
-    }
-
-    // 데미지 값을 직접 받는 오버로드 함수
     public void OnDamageProcess(int damage)
     {
-        // 데미지만큼 체력 감소
-        hp -= damage;
-        if (hp > 0)
+        _hp -= damage;
+
+        if (hitEffect != null)
         {
-            // 상태를 데미지로 전환
-            state = DroneState.Damage;
-            // 코루틴 호출
-            StopAllCoroutines();
-            StartCoroutine(Damage());
+            hitEffect.Stop();
+            hitEffect.Play();
         }
-        else
+
+        if (_hp <= 0)
         {
-            explosion.position = transform.position;
-            expEffect.Play();
-            expAudio.Play();
             Destroy(gameObject);
         }
     }
