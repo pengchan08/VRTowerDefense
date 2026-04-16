@@ -16,8 +16,8 @@ public class DroneAI : MonoBehaviour
 
     // 보스 드론 스탯
     [Header("Boss Drone Stats")]
-    public int   bossHP     = 50;
-    public float bossSpeed  = 3f;
+    public int   bossHP     = 100;
+    public float bossSpeed  = 1.5f;
     public int   bossDamage = 2;
 
     // 런타임 스탯
