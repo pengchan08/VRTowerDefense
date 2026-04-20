@@ -7081,7 +7081,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1396030477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10792,8 +10792,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59368edb8a2597541af8498742f716d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dronePrefab: {fileID: 8177743283203151537}
-  bossDronePrefab: {fileID: 1374957436190382929}
+  dronePrefab: {fileID: 3741013919263302051, guid: e746f881748d3a147949e70e5c570880, type: 3}
+  bossDronePrefab: {fileID: 5054379811673952670, guid: 17ef8f7333f5a26459306013f3d1d430, type: 3}
   droneSpawnPoints:
   - {fileID: 2087949606}
   droneTarget: {fileID: 1427283954}
@@ -11235,6 +11235,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Drone 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5054379811673952670, guid: 17ef8f7333f5a26459306013f3d1d430, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5579699372444814116, guid: 17ef8f7333f5a26459306013f3d1d430, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -11284,11 +11288,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17ef8f7333f5a26459306013f3d1d430, type: 3}
---- !u!1 &1374957436190382929 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5054379811673952670, guid: 17ef8f7333f5a26459306013f3d1d430, type: 3}
-  m_PrefabInstance: {fileID: 1374957436190382928}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1701484548207467486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11366,6 +11365,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Drone
       objectReference: {fileID: 0}
+    - target: {fileID: 3741013919263302051, guid: e746f881748d3a147949e70e5c570880, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4080561403969895193, guid: e746f881748d3a147949e70e5c570880, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -11411,11 +11414,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e746f881748d3a147949e70e5c570880, type: 3}
---- !u!1 &8177743283203151537 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3741013919263302051, guid: e746f881748d3a147949e70e5c570880, type: 3}
-  m_PrefabInstance: {fileID: 8177743283203151536}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -11430,7 +11428,6 @@ SceneRoots:
   - {fileID: 98915272}
   - {fileID: 1396030478}
   - {fileID: 53789893}
-  - {fileID: 607863345}
   - {fileID: 8177743283203151536}
   - {fileID: 1374957436190382928}
   - {fileID: 242600718}
@@ -11439,3 +11436,4 @@ SceneRoots:
   - {fileID: 648236202}
   - {fileID: 809225689}
   - {fileID: 1476327367}
+  - {fileID: 607863345}
