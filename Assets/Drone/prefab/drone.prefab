@@ -100,8 +100,6 @@ GameObject:
   - component: {fileID: 7753529637455496744}
   - component: {fileID: 3547542282917109130}
   - component: {fileID: 4551918246451309326}
-  - component: {fileID: 7708662460086178614}
-  - component: {fileID: 1663794132714653293}
   m_Layer: 13
   m_Name: fan.001
   m_TagString: Untagged
@@ -195,48 +193,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &7708662460086178614
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2073261356056685914}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.67837834, y: 0.09511802, z: 0.10129214}
-  m_Center: {x: -0.00000010430812, y: -0.00000020675361, z: 0.0000000074505797}
---- !u!135 &1663794132714653293
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2073261356056685914}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5667458
-  m_Center: {x: -0.00000012078179, y: -0.016707182, z: -4.254055e-10}
 --- !u!1 &2451053320213369575
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +289,6 @@ GameObject:
   - component: {fileID: 8931470751747304046}
   - component: {fileID: 8933368661226295832}
   - component: {fileID: 4551918246035451114}
-  - component: {fileID: 7076898092635257070}
   m_Layer: 13
   m_Name: fan.003
   m_TagString: Untagged
@@ -427,27 +382,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!135 &7076898092635257070
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2601154409419519408}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5870719
-  m_Center: {x: -0.037068132, y: 0.018243846, z: -0.04727787}
 --- !u!1 &3741013919263302051
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,13 +507,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBoss: 0
-  normalHP: 10
+  normalHP: 20
   normalSpeed: 1
   normalAttackRange: 3
   normalAttackRate: 2
   normalDamage: 1
-  bossHP: 50
-  bossSpeed: 3
+  bossHP: 100
+  bossSpeed: 0.8
   bossAttackRange: 4
   bossAttackRate: 2.5
   bossDamage: 2
@@ -620,8 +554,6 @@ GameObject:
   - component: {fileID: 2422079285350797280}
   - component: {fileID: 7932870141594899070}
   - component: {fileID: 4551918246493480329}
-  - component: {fileID: 3752012273456948667}
-  - component: {fileID: 8944514566456155176}
   m_Layer: 13
   m_Name: fan.004
   m_TagString: Untagged
@@ -715,48 +647,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &3752012273456948667
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4286012872002875650}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.6783783, y: 0.095117986, z: 0.10129214}
-  m_Center: {x: 2.553513e-15, y: 0.00000003352762, z: 0.00000012665987}
---- !u!135 &8944514566456155176
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4286012872002875650}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5432849
-  m_Center: {x: -0.008072614, y: -3.4474035e-10, z: 0.000000119028165}
 --- !u!1 &7634844523241940321
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,8 +659,6 @@ GameObject:
   - component: {fileID: 2621013614018636623}
   - component: {fileID: 1765430718152805484}
   - component: {fileID: 4551918245851678394}
-  - component: {fileID: 7126071408486308002}
-  - component: {fileID: 7793415460786784653}
   m_Layer: 13
   m_Name: fan.002
   m_TagString: Untagged
@@ -864,48 +752,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &7126071408486308002
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7634844523241940321}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.6783782, y: 0.09511798, z: 0.10129214}
-  m_Center: {x: -0.000000014901167, y: -0.00000003352762, z: -0.0000000074505797}
---- !u!135 &7793415460786784653
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7634844523241940321}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5659881
-  m_Center: {x: -0.03476375, y: -0.022551773, z: -0.000000004569436}
 --- !u!1 &8216160157147548148
 GameObject:
   m_ObjectHideFlags: 0

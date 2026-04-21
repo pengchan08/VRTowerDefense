@@ -7,7 +7,6 @@ public class MachineGun : MonoBehaviour
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
 
-
     [Header("Sound")]
     public AudioClip fireClip;      // 발사 사운드 클립
     public AudioClip reloadClip;    // 재장전 사운드 클립
@@ -18,17 +17,17 @@ public class MachineGun : MonoBehaviour
     public Transform crosshair;
 
     // 1발당 피해량
-    private int damage = 2;
+    private int damage = 3;
     // 현재 탄창 / 최대 탄창
     private int currentAmmo;
-    private int maxAmmo = 25;
+    private int maxAmmo = 30;
     // 재장전 시간 (초)
-    private float reloadTime = 1.5f;
+    private float reloadTime = 3.0f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 0.25f;
+    private float fireRate = 0.12f;
 
     // 탄퍼짐 최대 각도 (도)
-    private float spreadAngle = 4f;
+    private float spreadAngle = 3f;
 
     // 재장전 중 여부
     private bool isReloading = false;
@@ -42,12 +41,15 @@ public class MachineGun : MonoBehaviour
     {
         bulletEffect = bulletImpact.GetComponent<ParticleSystem>();
 
+        // ─── AudioSource 두 개를 이 GameObject에 자동 추가 ───
         AudioSource[] sources = GetComponents<AudioSource>();
 
+        // 첫 번째 AudioSource → 발사용
         fireAudio = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
         fireAudio.playOnAwake = false;
         fireAudio.clip = fireClip;
 
+        // 두 번째 AudioSource → 재장전용
         reloadAudio = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
         reloadAudio.playOnAwake = false;
         reloadAudio.clip = reloadClip;
@@ -89,6 +91,7 @@ public class MachineGun : MonoBehaviour
 
         ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
+        // 발사 사운드 재생 - PlayOneShot으로 발사마다 겹쳐서 재생해 연사음 끊김 방지
         if (fireAudio != null && fireClip != null)
         {
             fireAudio.PlayOneShot(fireClip);
@@ -152,6 +155,7 @@ public class MachineGun : MonoBehaviour
 
         SetGunVisible(false);
 
+        // 발사 사운드 중지 후 재장전 사운드 재생
         if (fireAudio != null) fireAudio.Stop();
         if (reloadAudio != null && reloadClip != null)
         {
@@ -172,12 +176,14 @@ public class MachineGun : MonoBehaviour
     public int CurrentAmmo  => currentAmmo;
     public int MaxAmmo      => maxAmmo;
     public bool IsReloading => isReloading;
+    public bool IsCoolingDown => !isReloading && (Time.time - lastFireTime < fireRate);
 
     public void OnWeaponDeactivate()
     {
         StopAllCoroutines();
         isReloading = false;
 
+        // 무기 비활성화 시 모든 사운드 중단
         if (fireAudio != null)   fireAudio.Stop();
         if (reloadAudio != null) reloadAudio.Stop();
 

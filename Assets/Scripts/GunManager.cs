@@ -7,7 +7,6 @@ public class GunManager : MonoBehaviour
     public GameObject[] guns;
 
     private int currentIndex = 0;
-    public int CurrentIndex => currentIndex;
 
     void Start()
     {
@@ -24,9 +23,10 @@ public class GunManager : MonoBehaviour
 
         if (swapInput)
         {
-            if (IsCurrentGunReloading())
+            // 현재 총이 재장전 중이면 무기 전환 불가
+            if (IsCurrentGunBusy())
             {
-                Debug.Log("[GunManager] 재장전 중에는 무기를 전환할 수 없습니다.");
+                Debug.Log("[GunManager] 발사 쿨타임 또는 재장전 중에는 무기를 전환할 수 없습니다.");
                 return;
             }
 
@@ -34,18 +34,18 @@ public class GunManager : MonoBehaviour
         }
     }
 
-    private bool IsCurrentGunReloading()
+    private bool IsCurrentGunBusy()
     {
         GameObject currentGun = guns[currentIndex];
 
         Gun gun = currentGun.GetComponent<Gun>();
-        if (gun != null) return gun.IsReloading;
+        if (gun != null) return gun.IsReloading || gun.IsCoolingDown;
 
         Shotgun shotgun = currentGun.GetComponent<Shotgun>();
-        if (shotgun != null) return shotgun.IsReloading;
+        if (shotgun != null) return shotgun.IsReloading || shotgun.IsCoolingDown;
 
         MachineGun machineGun = currentGun.GetComponent<MachineGun>();
-        if (machineGun != null) return machineGun.IsReloading;
+        if (machineGun != null) return machineGun.IsReloading || machineGun.IsCoolingDown;
 
         return false;
     }
@@ -72,4 +72,6 @@ public class GunManager : MonoBehaviour
         MachineGun machineGun = gunObj.GetComponent<MachineGun>();
         if (machineGun != null) { machineGun.OnWeaponDeactivate(); return; }
     }
+
+    public int CurrentIndex => currentIndex;
 }

@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 38972d9a807375f4fbdbf2e076aa183f, type: 3}
+      propertyPath: m_TagString
+      value: Bomb
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 38972d9a807375f4fbdbf2e076aa183f, type: 3}
       propertyPath: m_Layer
       value: 12

@@ -37,8 +37,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4507408111206201252, guid: b8c5de00063898242910230cb837de87, type: 3}
-      propertyPath: normalSpeed
+      propertyPath: bossSpeed
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4507408111206201252, guid: b8c5de00063898242910230cb837de87, type: 3}
+      propertyPath: normalSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4507408111206201252, guid: b8c5de00063898242910230cb837de87, type: 3}
       propertyPath: deathEffectPrefab

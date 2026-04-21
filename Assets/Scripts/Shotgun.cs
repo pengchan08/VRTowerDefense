@@ -18,27 +18,27 @@ public class Shotgun : MonoBehaviour
     public Transform crosshair;
 
     // 펠릿 1발당 피해량
-    private int damagePerPellet = 3;
+    private int damagePerPellet = 4;
     // 한 번 발사 시 나가는 펠릿 수
     private int pelletCount = 5;
     // 현재 탄창 / 최대 탄창
     private int currentAmmo;
-    private int maxAmmo = 12;
+    private int maxAmmo = 10;
     // 재장전 시간 (초)
-    private float reloadTime = 2.0f;
+    private float reloadTime = 2.5f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 1.2f;
+    private float fireRate = 1.0f;
 
     // 펠릿 퍼짐 각도 (도) — 값이 클수록 더 넓게 퍼짐
     private float spreadAngle = 8f;
 
     private Vector3[] pelletDirections = new Vector3[]
     {
-        new Vector3( 0.00f,  0.00f, 1f),
-        new Vector3( 0.15f,  0.00f, 1f),
-        new Vector3(-0.15f,  0.00f, 1f),
-        new Vector3( 0.00f,  0.15f, 1f),
-        new Vector3( 0.00f, -0.15f, 1f),
+        new Vector3( 0.00f,  0.00f, 1f),  // 중앙
+        new Vector3( 0.15f,  0.00f, 1f),  // 오른쪽
+        new Vector3(-0.15f,  0.00f, 1f),  // 왼쪽
+        new Vector3( 0.00f,  0.15f, 1f),  // 위
+        new Vector3( 0.00f, -0.15f, 1f),  // 아래
     };
 
     private bool isReloading = false;
@@ -49,17 +49,21 @@ public class Shotgun : MonoBehaviour
     public int CurrentAmmo  => currentAmmo;
     public int MaxAmmo      => maxAmmo;
     public bool IsReloading => isReloading;
+    public bool IsCoolingDown => !isReloading && (Time.time - lastFireTime < fireRate);
 
     void Start()
     {
         bulletEffect = bulletImpact.GetComponent<ParticleSystem>();
 
+        // ─── AudioSource 두 개를 이 GameObject에 자동 추가 ───
         AudioSource[] sources = GetComponents<AudioSource>();
 
+        // 첫 번째 AudioSource → 발사용
         fireAudio = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
         fireAudio.playOnAwake = false;
         fireAudio.clip = fireClip;
 
+        // 두 번째 AudioSource → 재장전용
         reloadAudio = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
         reloadAudio.playOnAwake = false;
         reloadAudio.clip = reloadClip;
@@ -100,6 +104,7 @@ public class Shotgun : MonoBehaviour
 
         ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
+        // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)
         {
             fireAudio.Stop();
@@ -118,6 +123,7 @@ public class Shotgun : MonoBehaviour
 
             if (Physics.Raycast(ray, out hitInfo, 200, ~layerMask))
             {
+                // 펠릿마다 이펙트 오브젝트를 복사해서 개별 위치에 재생
                 GameObject impactObj = Instantiate(
                     bulletImpact.gameObject,
                     hitInfo.point,
@@ -128,7 +134,7 @@ public class Shotgun : MonoBehaviour
                 {
                     ps.Stop();
                     ps.Play();
-
+                    // 파티클 재생이 끝나면 자동 제거
                     Destroy(impactObj, ps.main.duration + ps.main.startLifetime.constantMax);
                 }
                 else
@@ -147,6 +153,7 @@ public class Shotgun : MonoBehaviour
             }
         }
 
+        // 총구 이펙트는 원본 bulletImpact에서 한 번만 재생
         bulletEffect.Stop();
         bulletEffect.Play();
 
@@ -166,6 +173,7 @@ public class Shotgun : MonoBehaviour
                          + right   * localDir.x
                          + up      * localDir.y).normalized;
 
+        // 펠릿마다 랜덤 퍼짐 추가
         float randomX = Random.Range(-spreadAngle, spreadAngle);
         float randomY = Random.Range(-spreadAngle, spreadAngle);
         Quaternion spreadRot = Quaternion.Euler(randomX, randomY, 0);
@@ -189,6 +197,7 @@ public class Shotgun : MonoBehaviour
 
         SetGunVisible(false);
 
+        // 재장전 사운드 재생
         if (reloadAudio != null && reloadClip != null)
         {
             reloadAudio.Stop();
@@ -210,6 +219,7 @@ public class Shotgun : MonoBehaviour
         StopAllCoroutines();
         isReloading = false;
 
+        // 무기 비활성화 시 재장전 사운드 중단
         if (reloadAudio != null) reloadAudio.Stop();
 
         SetGunVisible(true);

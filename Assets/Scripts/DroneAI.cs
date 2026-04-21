@@ -36,12 +36,8 @@ public class DroneAI : MonoBehaviour
     private float lastAttackTime = -999f;
 
     [Header("Effects")]
-    public ParticleSystem hitEffect;        // 피격 이펙트
-    public GameObject     deathEffectPrefab; // 사망 이펙트 프리팹
-
-    public int   HP     => _hp;
-    public float Speed  => _speed;
-    public int   Damage => _damage;
+    public ParticleSystem hitEffect;
+    public GameObject     deathEffectPrefab;
 
     void Start()
     {
@@ -68,8 +64,10 @@ public class DroneAI : MonoBehaviour
 
         if (agent != null)
         {
-            agent.speed            = _speed;
-            agent.stoppingDistance = _attackRange;
+            agent.speed = _speed;
+            // stoppingDistance는 설정하지 않음
+            // 보스 크기 2배를 고려해 distToTarget으로 직접 판정
+            agent.stoppingDistance = 0f;
         }
     }
 
@@ -81,16 +79,30 @@ public class DroneAI : MonoBehaviour
 
         if (!isAttacking)
         {
-            agent.SetDestination(target.position);
-
-            if (distToTarget <= _attackRange)
+            // 공격 범위 밖 → 이동
+            if (distToTarget > _attackRange)
             {
-                isAttacking     = true;
+                agent.isStopped = false;
+                agent.SetDestination(target.position);
+            }
+            else
+            {
+                // 공격 범위 안 → 즉시 공격 시작
                 agent.isStopped = true;
+                isAttacking = true;
             }
         }
         else
         {
+            // 공격 범위를 벗어났다면 다시 추적 (타워 HP 변화 등으로 위치가 바뀔 경우 대비)
+            if (distToTarget > _attackRange)
+            {
+                isAttacking     = false;
+                agent.isStopped = false;
+                return;
+            }
+
+            // 공격 간격마다 데미지
             if (Time.time - lastAttackTime >= _attackRate)
             {
                 lastAttackTime = Time.time;
@@ -101,21 +113,23 @@ public class DroneAI : MonoBehaviour
 
     private void AttackTower()
     {
-        if (Tower.Instance == null) return;
-
-        Tower.Instance.HP -= _damage;
-
         if (Tower.Instance == null)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Tower.Instance.HP -= _damage;
+
+        // HP를 깎은 뒤 타워가 파괴됐는지는 다음 프레임에 Tower.Instance로 확인
+        // Tower.cs에서 HP <= 0이면 Destroy(gameObject)를 호출하므로
+        // 타워 파괴 후 드론은 target이 null이 되어 자동으로 Update 진입 차단됨
     }
 
     public void OnDamageProcess(int damage)
     {
         _hp -= damage;
 
-        // 피격 이펙트 재생
         if (hitEffect != null)
         {
             hitEffect.Stop();
@@ -124,23 +138,21 @@ public class DroneAI : MonoBehaviour
 
         if (_hp <= 0)
         {
-            // 사망 이펙트 생성 후 드론 제거
             if (deathEffectPrefab != null)
             {
                 GameObject effect = Instantiate(deathEffectPrefab, transform.position, transform.rotation);
-                // 파티클 재생 시간 후 자동 제거
                 ParticleSystem ps = effect.GetComponent<ParticleSystem>();
                 if (ps != null)
-                {
                     Destroy(effect, ps.main.duration + ps.main.startLifetime.constantMax);
-                }
                 else
-                {
                     Destroy(effect, 2f);
-                }
             }
 
             Destroy(gameObject);
         }
     }
+
+    public int   HP     => _hp;
+    public float Speed  => _speed;
+    public int   Damage => _damage;
 }

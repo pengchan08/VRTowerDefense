@@ -16,6 +16,8 @@ public class WaveManager : MonoBehaviour
     [Header("Bomb")]
     public GameObject  bombPrefab;
     public Transform[] bombSpawnPoints;
+    public string      bombTag   = "Bomb";
+    private const int  MAX_BOMBS = 3;
 
     [Header("Wave Announcement UI")]
     public Transform announcementUI;
@@ -131,16 +133,52 @@ public class WaveManager : MonoBehaviour
     {
         if (bombPrefab == null || bombSpawnPoints == null || bombSpawnPoints.Length == 0) return;
 
-        int bombCount = Random.Range(1, 3);
+        // 씬에 현재 남아있는 폭탄 수 확인
+        int currentBombCount = GameObject.FindGameObjectsWithTag(bombTag).Length;
+        int canSpawn = MAX_BOMBS - currentBombCount;
 
-        List<int> indices = new List<int>();
-        for (int i = 0; i < bombSpawnPoints.Length; i++) indices.Add(i);
-
-        for (int i = 0; i < bombCount && i < indices.Count; i++)
+        // 이미 3개 이상이면 생성 안 함
+        if (canSpawn <= 0)
         {
-            int randIdx = Random.Range(i, indices.Count);
-            int tmp = indices[i]; indices[i] = indices[randIdx]; indices[randIdx] = tmp;
-            Instantiate(bombPrefab, bombSpawnPoints[indices[i]].position, bombSpawnPoints[indices[i]].rotation);
+            Debug.Log("[WaveManager] 폭탄이 이미 최대(" + MAX_BOMBS + "개)입니다. 스폰 생략.");
+            return;
+        }
+
+        // 이미 폭탄이 있는 스폰 포인트 제외 — 반경 0.5f 안에 폭탄 태그 오브젝트가 있으면 점유된 것으로 판단
+        List<Transform> emptyPoints = new List<Transform>();
+        foreach (Transform sp in bombSpawnPoints)
+        {
+            Collider[] nearby = Physics.OverlapSphere(sp.position, 0.5f);
+            bool occupied = false;
+            foreach (Collider col in nearby)
+            {
+                if (col.CompareTag(bombTag))
+                {
+                    occupied = true;
+                    break;
+                }
+            }
+            if (!occupied) emptyPoints.Add(sp);
+        }
+
+        // 빈 스폰 포인트가 없으면 생성 안 함
+        if (emptyPoints.Count == 0) return;
+
+        // 0~2개 랜덤, 남은 슬롯과 빈 포인트 수를 초과하지 않도록 제한
+        int bombCount = Mathf.Min(Random.Range(0, 3), Mathf.Min(canSpawn, emptyPoints.Count));
+
+        // 빈 포인트 목록을 셔플해서 중복 없이 선택
+        for (int i = 0; i < emptyPoints.Count; i++)
+        {
+            int randIdx = Random.Range(i, emptyPoints.Count);
+            Transform tmp = emptyPoints[i];
+            emptyPoints[i] = emptyPoints[randIdx];
+            emptyPoints[randIdx] = tmp;
+        }
+
+        for (int i = 0; i < bombCount; i++)
+        {
+            Instantiate(bombPrefab, emptyPoints[i].position, emptyPoints[i].rotation);
         }
     }
 

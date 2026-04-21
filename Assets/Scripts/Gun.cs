@@ -8,11 +8,11 @@ public class Gun : MonoBehaviour
     private ParticleSystem bulletEffect;
 
     [Header("Sound")]
-    public AudioClip fireClip;
-    public AudioClip reloadClip;
+    public AudioClip fireClip;      // 발사 사운드 클립
+    public AudioClip reloadClip;    // 재장전 사운드 클립
 
-    private AudioSource fireAudio;
-    private AudioSource reloadAudio;
+    private AudioSource fireAudio;   // 발사 전용 AudioSource
+    private AudioSource reloadAudio; // 재장전 전용 AudioSource
 
     // Crosshair를 위한 속성
     public Transform crosshair;
@@ -21,11 +21,11 @@ public class Gun : MonoBehaviour
     private int damage = 5;
     // 현재 탄창 / 최대 탄창
     private int currentAmmo;
-    private int maxAmmo = 6;
+    private int maxAmmo = 8;
     // 재장전 시간 (초)
-    private float reloadTime = 1.2f;
+    private float reloadTime = 1.5f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
-    private float fireRate = 0.7f;
+    private float fireRate = 1.0f;
 
     // 재장전 중 여부
     private bool isReloading = false;
@@ -36,18 +36,23 @@ public class Gun : MonoBehaviour
     public int CurrentAmmo => currentAmmo;
     public int MaxAmmo => maxAmmo;
     public bool IsReloading => isReloading;
+    public bool IsCoolingDown => !isReloading && (Time.time - lastFireTime < fireRate);
 
     void Start()
     {
         // 총알 효과 파티클 시스템 컴포넌트 가져오기
         bulletEffect = bulletImpact.GetComponent<ParticleSystem>();
 
+        // ─── AudioSource 두 개를 이 GameObject에 자동 추가 ───
+        // (Inspector에서 미리 붙여 둔 경우엔 GetComponents로 재사용 가능)
         AudioSource[] sources = GetComponents<AudioSource>();
 
+        // 첫 번째 AudioSource → 발사용
         fireAudio = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
         fireAudio.playOnAwake = false;
         fireAudio.clip = fireClip;
 
+        // 두 번째 AudioSource → 재장전용
         reloadAudio = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
         reloadAudio.playOnAwake = false;
         reloadAudio.clip = reloadClip;
@@ -91,6 +96,7 @@ public class Gun : MonoBehaviour
 
         ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
+        // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)
         {
             fireAudio.Stop();
@@ -143,6 +149,7 @@ public class Gun : MonoBehaviour
 
         SetGunVisible(false);
 
+        // 재장전 사운드 재생
         if (reloadAudio != null && reloadClip != null)
         {
             reloadAudio.Stop();
@@ -164,6 +171,7 @@ public class Gun : MonoBehaviour
         StopAllCoroutines();
         isReloading = false;
 
+        // 무기 비활성화 시 재장전 사운드 중단
         if (reloadAudio != null) reloadAudio.Stop();
 
         SetGunVisible(true);
