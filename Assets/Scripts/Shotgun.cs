@@ -30,7 +30,7 @@ public class Shotgun : MonoBehaviour
     private float fireRate = 1.0f;
 
     // 펠릿 퍼짐 각도 (도) — 값이 클수록 더 넓게 퍼짐
-    private float spreadAngle = 8f;
+    private float spreadAngle = 3f;
 
     private Vector3[] pelletDirections = new Vector3[]
     {
@@ -102,7 +102,7 @@ public class Shotgun : MonoBehaviour
         lastFireTime = Time.time;
         currentAmmo--;
 
-        ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+        ARAVRInput.PlayVibration(0.15f, 0.3f, 1.0f, ARAVRInput.Controller.RTouch);
 
         // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)
@@ -142,13 +142,11 @@ public class Shotgun : MonoBehaviour
                     Destroy(impactObj, 1f);
                 }
 
-                if (hitInfo.transform.name.Contains("Drone"))
+                DroneAI drone = hitInfo.transform.GetComponent<DroneAI>()
+                             ?? hitInfo.transform.GetComponentInParent<DroneAI>();
+                if (drone != null)
                 {
-                    DroneAI drone = hitInfo.transform.GetComponent<DroneAI>();
-                    if (drone)
-                    {
-                        drone.OnDamageProcess(damagePerPellet);
-                    }
+                    drone.OnDamageProcess(damagePerPellet);
                 }
             }
         }

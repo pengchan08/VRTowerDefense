@@ -1,5 +1,5 @@
-#define PC
-// #define Oculus
+// #define PC
+#define Oculus
 
 using System.Collections;
 using System.Collections.Generic;

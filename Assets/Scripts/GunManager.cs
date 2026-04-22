@@ -18,7 +18,7 @@ public class GunManager : MonoBehaviour
 
     void Update()
     {
-        bool swapInput = ARAVRInput.GetDown(ARAVRInput.Button.Two, ARAVRInput.Controller.RTouch)
+        bool swapInput = ARAVRInput.GetDown(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch)
                          || Input.GetKeyDown(KeyCode.R);
 
         if (swapInput)

@@ -94,7 +94,7 @@ public class Gun : MonoBehaviour
         lastFireTime = Time.time;
         currentAmmo--;
 
-        ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+        ARAVRInput.PlayVibration(0.05f, 1f, 0.8f, ARAVRInput.Controller.RTouch);
 
         // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)
@@ -117,13 +117,11 @@ public class Gun : MonoBehaviour
             bulletImpact.position = hitInfo.point;
             bulletImpact.forward = hitInfo.normal;
 
-            if (hitInfo.transform.name.Contains("Drone"))
+            DroneAI drone = hitInfo.transform.GetComponent<DroneAI>()
+                         ?? hitInfo.transform.GetComponentInParent<DroneAI>();
+            if (drone != null)
             {
-                DroneAI drone = hitInfo.transform.GetComponent<DroneAI>();
-                if (drone)
-                {
-                    drone.OnDamageProcess(damage);
-                }
+                drone.OnDamageProcess(damage);
             }
         }
 
