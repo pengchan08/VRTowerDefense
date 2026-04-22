@@ -7,6 +7,9 @@ public class MachineGun : MonoBehaviour
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
 
+    [Header("Muzzle Flash")]
+    public ParticleSystem muzzleFlash;
+
     [Header("Sound")]
     public AudioClip fireClip;      // 발사 사운드 클립
     public AudioClip reloadClip;    // 재장전 사운드 클립
@@ -20,7 +23,7 @@ public class MachineGun : MonoBehaviour
     private int damage = 3;
     // 현재 탄창 / 최대 탄창
     private int currentAmmo;
-    private int maxAmmo = 30;
+    private int maxAmmo = 20;
     // 재장전 시간 (초)
     private float reloadTime = 3.0f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
@@ -90,6 +93,13 @@ public class MachineGun : MonoBehaviour
         currentAmmo--;
 
         ARAVRInput.PlayVibration(0.04f, 1f, 0.5f, ARAVRInput.Controller.RTouch);
+
+        // 총구 이펙트 재생
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop();
+            muzzleFlash.Play();
+        }
 
         // 발사 사운드 재생 - PlayOneShot으로 발사마다 겹쳐서 재생해 연사음 끊김 방지
         if (fireAudio != null && fireClip != null)

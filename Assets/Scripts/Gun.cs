@@ -7,6 +7,9 @@ public class Gun : MonoBehaviour
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
 
+    [Header("Muzzle Flash")]
+    public ParticleSystem muzzleFlash;
+
     [Header("Sound")]
     public AudioClip fireClip;      // 발사 사운드 클립
     public AudioClip reloadClip;    // 재장전 사운드 클립
@@ -95,6 +98,13 @@ public class Gun : MonoBehaviour
         currentAmmo--;
 
         ARAVRInput.PlayVibration(0.05f, 1f, 0.8f, ARAVRInput.Controller.RTouch);
+
+        // 총구 이펙트 재생
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop();
+            muzzleFlash.Play();
+        }
 
         // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)

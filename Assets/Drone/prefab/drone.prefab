@@ -397,7 +397,7 @@ GameObject:
   - component: {fileID: 3071438911619899602}
   - component: {fileID: 4167173641741346759}
   m_Layer: 13
-  m_Name: Drone
+  m_Name: drone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -508,12 +508,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isBoss: 0
   normalHP: 20
-  normalSpeed: 1
+  normalSpeed: 1.2
   normalAttackRange: 3
   normalAttackRate: 2
   normalDamage: 1
-  bossHP: 100
-  bossSpeed: 0.8
+  bossHP: 250
+  bossSpeed: 1
   bossAttackRange: 4
   bossAttackRate: 2.5
   bossDamage: 2

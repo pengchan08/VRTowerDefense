@@ -7,6 +7,9 @@ public class Shotgun : MonoBehaviour
     public Transform bulletImpact;
     private ParticleSystem bulletEffect;
 
+    [Header("Muzzle Flash")]
+    public ParticleSystem muzzleFlash;
+
     [Header("Sound")]
     public AudioClip fireClip;      // 발사 사운드 클립
     public AudioClip reloadClip;    // 재장전 사운드 클립
@@ -18,27 +21,27 @@ public class Shotgun : MonoBehaviour
     public Transform crosshair;
 
     // 펠릿 1발당 피해량
-    private int damagePerPellet = 4;
+    private int damagePerPellet = 2;
     // 한 번 발사 시 나가는 펠릿 수
-    private int pelletCount = 5;
+    private int pelletCount = 4;
     // 현재 탄창 / 최대 탄창
     private int currentAmmo;
-    private int maxAmmo = 10;
+    private int maxAmmo = 5;
     // 재장전 시간 (초)
     private float reloadTime = 2.5f;
     // 공격 속도: 발사 후 다음 발사까지의 최소 간격 (초)
     private float fireRate = 1.0f;
 
     // 펠릿 퍼짐 각도 (도) — 값이 클수록 더 넓게 퍼짐
-    private float spreadAngle = 3f;
+    private float spreadAngle = 1f;
 
     private Vector3[] pelletDirections = new Vector3[]
     {
         new Vector3( 0.00f,  0.00f, 1f),  // 중앙
-        new Vector3( 0.15f,  0.00f, 1f),  // 오른쪽
-        new Vector3(-0.15f,  0.00f, 1f),  // 왼쪽
-        new Vector3( 0.00f,  0.15f, 1f),  // 위
-        new Vector3( 0.00f, -0.15f, 1f),  // 아래
+        new Vector3( 0.05f,  0.00f, 1f),  // 오른쪽
+        new Vector3(-0.05f,  0.00f, 1f),  // 왼쪽
+        new Vector3( 0.00f,  0.05f, 1f),  // 위
+        new Vector3( 0.00f, -0.05f, 1f),  // 아래
     };
 
     private bool isReloading = false;
@@ -103,6 +106,13 @@ public class Shotgun : MonoBehaviour
         currentAmmo--;
 
         ARAVRInput.PlayVibration(0.15f, 0.3f, 1.0f, ARAVRInput.Controller.RTouch);
+
+        // 총구 이펙트 재생
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop();
+            muzzleFlash.Play();
+        }
 
         // 발사 사운드 재생
         if (fireAudio != null && fireClip != null)

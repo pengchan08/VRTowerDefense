@@ -10,14 +10,14 @@ public class DroneAI : MonoBehaviour
 
     [Header("Normal Drone Stats")]
     public int   normalHP          = 20;
-    public float normalSpeed       = 3f;
+    public float normalSpeed       = 1.2f;
     public float normalAttackRange = 3f;
     public float normalAttackRate  = 2.0f;
     public int   normalDamage      = 1;
 
     [Header("Boss Drone Stats")]
-    public int   bossHP          = 100;
-    public float bossSpeed       = 1.5f;
+    public int   bossHP          = 250;
+    public float bossSpeed       = 1f;
     public float bossAttackRange = 4f;
     public float bossAttackRate  = 2.5f;
     public int   bossDamage      = 2;
